@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>{{ product.name }}</title>
+{% endblock %}
+{% block nav %}
+{% include 'navbar.html' %}
+{% endblock %}
+{% block content %}
+{% load manage_cart %}
+<div class="container-fluid row mt-3">
+
+
+  <div class="col-lg-3" style="width: 250px; height: auto; margin-left: 10px; padding: 0px 0 0 5px; position: fixed;">
+    <div class="list-group">
+      <a class="list-group-item list-group-item-action active" aria-current="true">
+        Categories
+      </a>
+      <a href="/?category={{category.all}}" class="list-group-item list-group-item-action">All</a>
+
+      {% for category in categorys %}
+
+      <a href="/?category={{category.id}}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+      {% endfor %}
+      
+    </div>
+  </div>
+
+  <div id="products" class="col-lg-9" style="margin-left: auto; margin-right: 0">
+    {% for product in products %}
+    <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <a href="{{product.product_img.url}}" style="text-decoration: none;">
+                <img src="{{product.product_img.url}}" class="card-img-top " alt="..." style="min-width: 300px; max-width: 300px; min-height: 200px; max-height: 200px; object-fit: contain;     margin: 15% 0;">
+            </a>
+          </div>
+          
+          <div class="col-md-8">
+            <div class="card-body" id="{{product.id}}" >
+                <h4 class="card-title">{{ product.name }}</h4>
+                <h5 class="card-title">{{ product.formatted_price  }}</h5>
+                <p class="card-text">{{ product.product_des|linebreaksbr }}</p>
+
+              <!-- anithing -->
+              {% if product|is_in_cart:request.session.cart %}
+              <!--this is '+' Cart-->
+              <div class="row d-block">
+                <form class="d-inline" action="" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" style="display: none !important; visibility:hidden;" name="product" value="{{ product.id }}" class="hidden-input">
+                  <input href="" type="submit" class="col-1 btn btn-primary" value="+" >
+                </form>
+              <div class="d-inline">
+                {{product|cart_count:request.session.cart}}
+              </div>
+              <!--this is '-' Cart-->
+              <form class="d-inline" action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" style="display: none !important; visibility:hidden;" name="product" value="{{ product.id }}" class="hidden-input">
+                <input type="text" style="display: none !important; visibility:hidden;" name="remove" value="True" class="hidden-input">
+                <input href="" type="submit" class="col-1 btn btn-primary" value="-" >
+              </form>
+              </div>
+              <!--this is Add to Cart-->
+              {% else %}
+              <form action="#{{product.id}}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" style="display: none !important; visibility:hidden;" name="product" value="{{ product.id }}" class="hidden-input">
+                <input href="" type="submit" class="btn btn-primary" value="Add to Cart" >
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+
+ 
+
+{% endblock %}
+

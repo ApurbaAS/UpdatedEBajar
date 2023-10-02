@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Hello</title>
+{% endblock %}
+{% block nav %}
+{% include 'navbar.html' %}
+{% endblock %}
+{% block content %}
+{% load manage_cart %}
+<div class="container-fluid row">
+
+<div id="products" class="col-lg-9" style="margin-left: auto; margin-right: 0" >
+    {% for product in cart_products %}
+    <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <a href="{{product.product_img.url}}" style="text-decoration: none;">
+                <img src="{{product.product_img.url}}" class="card-img-top " alt="..." style="min-width: 100px; min-height: 100px; object-fit: contain; margin: 15% 0;">
+            </a>
+          </div>
+          
+          <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title">{{ product.name }}</h4>
+                <h5 class="card-title">{{ product.formatted_price  }}</h5>
+                <p class="card-text">{{ product.product_des|linebreaksbr }}</p>
+                <p class="card-text">{{ product|cart_count:request.session.cart }}</p>
+                <h5 class="card-text">{{ product|cart_amount:request.session.cart }}</h5>
+              <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" style="display: none !important; visibility:hidden;" name="product" value="{{ product.id }}" class="hidden-input">
+                <input href="" type="submit" class="btn btn-primary" value="Add to Cart" >
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+{% endblock %}
